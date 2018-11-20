@@ -47,7 +47,7 @@ int main(int argc, char const *argv[])
         perror("accept error");
         exit(1);
     }
-    fprintf(stdout, "sockserver:%d, conn:%d", socket_fd, conn);
+    fprintf(stdout, "sockserver:%d, conn:%d\n", socket_fd, conn);
     fflush(stdout);
 
     while(1){

@@ -10,6 +10,7 @@
 #include<sys/socket.h>
 #include<unistd.h>
 #include<netinet/in.h>
+#include<arpa/inet.h>
 #endif
 
 #define MYPORT 8887
@@ -25,7 +26,7 @@ int main(int argc, char const *argv[])
     struct sockaddr_in server_sockaddr;
     server_sockaddr.sin_family = AF_INET;
     server_sockaddr.sin_port = htons(MYPORT);
-    server_sockaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    server_sockaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
     
     if(connect(socket_fd, (struct sockaddr *)&server_sockaddr, sizeof(server_sockaddr)) == -1){
         perror("bind error");
@@ -34,7 +35,7 @@ int main(int argc, char const *argv[])
 
 
 
-    fprintf(stdout, "connect success. conn:%d", socket_fd);
+    fprintf(stdout, "connect success. conn:%d\n", socket_fd);
     fflush(stdout);
 
     char send_buf[BUFFER_SIZE];
@@ -49,9 +50,9 @@ int main(int argc, char const *argv[])
         }
         if(strcmp(send_buf, "\n") == 0)
             continue;
-        if(strcmp(send_buf, "byebye\n") == 0)
+        send(socket_fd, send_buf, strlen(send_buf), 0);
+        if(strcmp(send_buf, "exit\n") == 0)
             break;
-        send(socket_fd, send_buf, strlen(send_buf)+1, 0);
 
         memset(recv_buf, 0, sizeof(recv_buf));
         int len = recv(socket_fd, recv_buf, sizeof(recv_buf), 0);
