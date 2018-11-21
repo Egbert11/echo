@@ -1,7 +1,7 @@
 # echo
 echo server &amp; client
 ### 实现功能
-* 可以供服务端与单个客户端进行通信，基于socket，实现兼容了windows和linux，在两个平台上均可正常运行。
+* 可以供服务端与多个客户端进行通信，基于epoll和socket，在linux平台上可正常运行。
 
 ### 运行方式
 ```
