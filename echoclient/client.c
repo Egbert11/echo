@@ -1,7 +1,10 @@
 #include<stdlib.h>
 #include<string.h>
 #include<stdio.h>
+#include<fcntl.h>
 #include<sys/types.h>
+#include<errno.h>
+#include<../protocol/echoprotocol.h>
 
 #ifdef __WIN32__
 #include<winsock2.h>
@@ -15,6 +18,7 @@
 
 #define MYPORT 8887
 #define BUFFER_SIZE 1024
+
 
 int main(int argc, char const *argv[])
 {
