@@ -50,4 +50,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
->>>>>>> 351a97b9b7cd3020d71844f84860ca00faf0c1e2
+
+# vscode
+.vscode
