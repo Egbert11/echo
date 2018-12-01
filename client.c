@@ -2,19 +2,13 @@
 #include<string.h>
 #include<stdio.h>
 #include<fcntl.h>
-#include<sys/types.h>
 #include<errno.h>
-#include "msgutils.c"
-
-#ifdef __WIN32__
-#include<winsock2.h>
-#include<ws2tcpip.h>
-#else
-#include<sys/socket.h>
 #include<unistd.h>
+#include<sys/socket.h>
+#include<sys/types.h>
 #include<netinet/in.h>
 #include<arpa/inet.h>
-#endif
+#include "msgutils.c"
 
 #define MYPORT 8887
 
@@ -73,4 +67,3 @@ int main(int argc, char const *argv[])
     return 0;
 
 }
-
