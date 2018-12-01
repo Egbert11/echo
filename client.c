@@ -59,7 +59,6 @@ int main(int argc, char const *argv[])
             exit(1);
         }
         len = ntohs(len);
-        // printf("msg len:%d\n", len);
         readn(socket_fd, recv_pack.buf, len);
         fputs(recv_pack.buf, stdout);
     }
