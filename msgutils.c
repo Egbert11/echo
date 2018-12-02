@@ -2,8 +2,6 @@
 #include<unistd.h>
 #include<errno.h>
 #include<fcntl.h>
-#include "protocol.h"
-
 
 ssize_t readn(int fd, void *buf, size_t count){
     int left = count;
