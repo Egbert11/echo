@@ -20,7 +20,7 @@ gcc client.c -o client
 
 ### 实现效果
 ```
-jmhuang@cc-offline09-30002:~/echo/echoserver$ ./server  
+user@debian:~/echo/echoserver$ ./server  
 sockserver:3, conn:4                    
 hello world!
 nice to meet you                                                
@@ -28,7 +28,7 @@ nice to meet you
 ```
 
 ```
-jmhuang@cc-offline09-30002:~/echo/echoclient$ ./client
+user@debian:~/echo/echoclient$ ./client
 connect success. conn:3                                                                                                        
 hello world!                                                                                                                 
 hello world!                                                                                                                 

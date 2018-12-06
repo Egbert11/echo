@@ -1,4 +1,5 @@
 #include<stdlib.h>
+#include<stdint.h>
 #include<string.h>
 #include<stdio.h>
 #include<errno.h>
@@ -9,6 +10,7 @@
 #include<netinet/in.h>
 #include<sys/epoll.h>
 #include "msgutils.c"
+#include "protocol.c"
 
 #define MYPORT 8887
 #define QUEUE 20
@@ -122,9 +124,12 @@ int main(int argc, char const *argv[])
                 else if(events[i].events & EPOLLIN){
                     // char buf[BUFFER_SIZE];
                     // printf("check point\n");
-                    struct packet pack;
-                    memset(&pack, 0, sizeof(pack));
-                    unsigned short len;
+                    struct packet *pack;
+                    pack = malloc(sizeof(struct packet));
+                    memset(pack, 0, sizeof(struct packet));
+                    pack->buf = malloc(BUFFER_SIZE);
+                    memset(pack->buf, 0, BUFFER_SIZE);
+                    uint16_t len;
                     ssize_t count = readn(fd, &len, 2);
                     // printf("check point2 count:%d\n", count);
                     if(count != 2){
@@ -134,13 +139,27 @@ int main(int argc, char const *argv[])
                     }
                     else {
                         len = ntohs(len);
+                        pack->len = len;
                         // printf("check point3 len:%d\n", len);
-                        int read_num = readn(fd, pack.buf, len);
-                        // buf本身包含\n，故不再使用换行符
-                        printf("fd:%d, buf:%s", fd, pack.buf);
-                        pack.len = htons(len);
-                        ssize_t s = writen(fd, &pack, len+2);
-                        // printf("fd:%d writen len:%d, buf:%s\n", fd, len+2, pack.buf);
+                        int read_num = readn(fd, pack->buf, len);
+                        // unpack header & body
+                        char *head_str = NULL, *chat_str = NULL;
+                        // print_str(pack->buf, len);
+                        unpack_packet(pack->buf, &head_str, &chat_str, pack->len);
+                        struct header *head = unpack_header(head_str);
+                        struct ChatProtocol *proto = unpack_chat_protocol(chat_str);
+                        printf("fd:%d, sid:%d, cid:%d, sender:%s, receiver:%s, content:%s", fd, head->sid, head->cid, proto->sender, proto->receiver, proto->content);
+                        // send msg back
+                        char *send_buf = malloc(1024);
+                        char *send_ptr = send_buf;
+                        memset(send_buf, 0, 1024);
+                        uint16_t size = strlen(proto->content);
+                        size = htons(size);
+                        memcpy(send_ptr, &size, 2);
+                        send_ptr += 2;
+                        strcpy(send_ptr, proto->content);
+                        ssize_t s = writen(fd, send_buf, ntohs(size)+2);
+                        printf("fd:%d writen len:%d, buf:%s", fd, ntohs(size)+2, send_buf+2);
                         if(s == -1){
                             perror("write error");
                         }

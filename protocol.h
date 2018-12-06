@@ -1,21 +1,43 @@
-#ifndef PROTOCOL_H
-#define PROTOCOL_H
-#include<stdint.h>
+#ifndef __ECHO_PROTOCOL_H__
+#define __ECHO_PROTOCOL_H__
 
+#include<stdint.h>
 #ifndef BUFFER_SIZE
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 65536
+#endif
+#ifndef HEADER_SIZE 
+#define HEADER_SIZE 10
+#endif
+#ifndef CHAT_PROTOCOL_SIZE 
+#define CHAT_PROTOCOL_SIZE 4096
 #endif
 
 struct packet {
-    unsigned short len;
-    char buf[BUFFER_SIZE];
+    uint16_t len;
+    char *buf;
 };
 
-struct message {
-    uint32_t sid;
-    uint32_t cid;
-    uint16_t length;
-    char *body;
+struct header {
+    uint16_t sid;
+    uint16_t cid;
 };
 
-#endif
+struct ChatProtocol {
+    char *sender;
+    char *receiver;
+    char *content;
+};
+
+// header
+char *pack_header(uint16_t sid, uint16_t cid);
+struct header* unpack_header(char *head_str);
+
+// ChatProtocol
+char *pack_chat_protocol(struct ChatProtocol* protocol, uint16_t *length);
+struct ChatProtocol* unpack_chat_protocol(char *protocol_str);
+
+// packet
+char *pack_packet(char *head, char *body, uint16_t body_len);
+void unpack_packet(char *buf, char **head, char **body, uint16_t total_len);
+
+#endif // __ECHO_PROTOCOL_H__

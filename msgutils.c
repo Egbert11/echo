@@ -1,3 +1,5 @@
+#ifndef __MSGUTILS_C__
+#define __MSGUTILS_C__
 #include<sys/types.h>
 #include<unistd.h>
 #include<errno.h>
@@ -72,3 +74,14 @@ int make_socket_non_blocking(int fd){
     }
     return 0;
 }
+
+// print fixed length
+void print_str(char *str, uint16_t str_len){
+    uint16_t i = 0;
+    for(; i<str_len; i++){
+        printf("%02x",str[i]&0xff);
+    }
+    printf(";\n");
+}
+
+#endif
